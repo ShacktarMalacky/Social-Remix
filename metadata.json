@@ -1,0 +1,12 @@
+{
+  "name": "Remix Elite Fusion social",
+  "description": "The ultimate premium social ecosystem merging community, high-end aesthetics, and direct elite monetization.",
+  "requestFramePermissions": [
+    "camera",
+    "microphone",
+    "geolocation"
+  ],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}

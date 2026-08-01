@@ -1,0 +1,401 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Orbitron:wght@400;500;600;700;800;900&family=Share+Tech+Mono&family=Space+Grotesk:wght@300;400;500;600;700&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Space Grotesk", sans-serif;
+  --font-display: "Orbitron", sans-serif;
+  --font-mono: "Share Tech Mono", monospace;
+  
+  --color-midnight: #020205;
+  --color-premium: #ff007f; /* Cyber Magenta */
+  
+  --color-cyber-cyan: #00f3ff;
+  --color-cyber-pink: #ff007f;
+  --color-cyber-yellow: #f8e71c;
+  --color-cyber-green: #39ff14;
+  --color-cyber-purple: #9013fe;
+  --color-cyber-bg: #03030c;
+  --color-cyber-card: rgba(13, 13, 29, 0.7);
+}
+
+@layer base {
+  body {
+    background-color: #020205;
+    background-image: 
+      radial-gradient(circle at 50% 120%, rgba(255, 0, 127, 0.1), transparent 70%),
+      radial-gradient(circle at 20% 20%, rgba(0, 243, 255, 0.08), transparent 50%),
+      linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%),
+      linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+    background-size: 100% 100%, 100% 100%, 100% 4px, 6px 100%;
+    @apply text-white antialiased overflow-x-hidden font-sans;
+  }
+}
+
+/* Holographic Cyber Grid Backdrop */
+.cyber-grid {
+  position: absolute;
+  inset: 0;
+  background-size: 40px 40px;
+  background-image: 
+    linear-gradient(to right, rgba(0, 243, 255, 0.04) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(0, 243, 255, 0.04) 1px, transparent 1px);
+  mask-image: radial-gradient(ellipse at 50% 50%, black 40%, transparent 95%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.atmosphere-bg {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background-color: #020205;
+  overflow: hidden;
+}
+
+.atmosphere-glow {
+  position: absolute;
+  width: 900px;
+  height: 900px;
+  border-radius: 50%;
+  filter: blur(150px);
+  opacity: 0.18;
+  pointer-events: none;
+  animation: float-longer 25s infinite alternate ease-in-out;
+}
+
+@keyframes float-longer {
+  0% { transform: translate(-15%, -15%) rotate(0deg) scale(0.9); }
+  50% { transform: translate(5%, 10%) rotate(180deg) scale(1.1); }
+  100% { transform: translate(15%, -5%) rotate(360deg) scale(1); }
+}
+
+/* Glass cybernetic HUD card setup */
+.glass-card {
+  @apply bg-cyber-card backdrop-blur-3xl border border-white/10 shadow-[0_0_20px_rgba(0,0,0,0.67)];
+  position: relative;
+}
+
+.glass-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(0, 243, 255, 0.4), transparent);
+}
+
+/* Cyber corner cuts */
+.cyber-panel {
+  position: relative;
+  background: rgba(10, 10, 22, 0.85);
+  border: 1px solid rgba(0, 243, 255, 0.2);
+  box-shadow: 0 0 15px rgba(0, 243, 255, 0.1);
+  clip-path: polygon(
+    0px 0px, 
+    calc(100% - 15px) 0px, 
+    100% 15px, 
+    100% 100%, 
+    15px 100%, 
+    0px calc(100% - 15px)
+  );
+}
+
+.cyber-panel-magenta {
+  position: relative;
+  background: rgba(15, 6, 18, 0.9);
+  border: 1px solid rgba(255, 0, 127, 0.35);
+  box-shadow: 0 0 20px rgba(255, 0, 127, 0.15);
+  clip-path: polygon(
+    15px 0px, 
+    100% 0px, 
+    100% calc(100% - 15px), 
+    calc(100% - 15px) 100%, 
+    0px 100%, 
+    0px 15px
+  );
+}
+
+/* Scanline/CRT Screen Ripple Overlay */
+.scanlines {
+  position: fixed;
+  inset: 0;
+  background: linear-gradient(
+    rgba(18, 16, 16, 0) 50%, 
+    rgba(0, 0, 0, 0.3) 50%
+  );
+  background-size: 100% 3.5px;
+  z-index: 9999;
+  pointer-events: none;
+  opacity: 0.12;
+}
+
+.scanlines::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle, transparent 40%, rgba(0,0,0,0.4) 100%);
+  pointer-events: none;
+}
+
+/* Interactive Glitch Text style */
+.cyber-glitch {
+  position: relative;
+  animation: glitch-skew 4s infinite linear alternate-reverse;
+}
+
+.cyber-glitch::before,
+.cyber-glitch::after {
+  content: attr(data-text);
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: transparent;
+}
+
+.cyber-glitch::before {
+  left: 2px;
+  text-shadow: -2px 0 #ff007f;
+  clip: rect(44px, 450px, 56px, 0);
+  animation: glitch-anim 5s infinite linear alternate-reverse;
+}
+
+.cyber-glitch::after {
+  left: -2px;
+  text-shadow: -2px 0 #00f3ff, 0 2px #ff007f;
+  clip: rect(85px, 450px, 140px, 0);
+  animation: glitch-anim2 5s infinite linear alternate-reverse;
+}
+
+@keyframes glitch-anim {
+  0% { clip: rect(15px, 9999px, 66px, 0); transform: skew(0.1deg); }
+  100% { clip: rect(85px, 9999px, 5px, 0); transform: skew(0.5deg); }
+}
+
+@keyframes glitch-anim2 {
+  0% { clip: rect(70px, 9999px, 105px, 0); transform: skew(-0.3deg); }
+  100% { clip: rect(12px, 9999px, 85px, 0); transform: skew(-0.8deg); }
+}
+
+@keyframes glitch-skew {
+  0% { transform: skew(0deg); }
+  10% { transform: skew(0deg); }
+  11% { transform: skew(-3deg); }
+  12% { transform: skew(0deg); }
+  50% { transform: skew(0deg); }
+  51% { transform: skew(2deg); }
+  52% { transform: skew(0deg); }
+  100% { transform: skew(0deg); }
+}
+
+/* Neon Glow Gradients and Buttons */
+.premium-gradient {
+  background: linear-gradient(135deg, #ff007f 0%, #7000ff 50%, #00f3ff 100%);
+  box-shadow: 0 0 20px rgba(255, 0, 127, 0.4);
+}
+
+.premium-gradient:hover {
+  box-shadow: 0 0 35px rgba(0, 243, 255, 0.7);
+}
+
+.neon-border-cyan {
+  border: 1px solid rgba(0, 243, 255, 0.5);
+  box-shadow: 0 0 10px rgba(0, 243, 255, 0.2), inset 0 0 10px rgba(0, 243, 255, 0.1);
+}
+
+.neon-border-pink {
+  border: 1px solid rgba(255, 0, 127, 0.5);
+  box-shadow: 0 0 10px rgba(255, 0, 127, 0.2), inset 0 0 10px rgba(255, 0, 127, 0.1);
+}
+
+.neon-border-green {
+  border: 1px solid rgba(57, 255, 20, 0.5);
+  box-shadow: 0 0 10px rgba(57, 255, 20, 0.2), inset 0 0 10px rgba(57, 255, 20, 0.1);
+}
+
+.neon-glow-cyan {
+  text-shadow: 0 0 10px rgba(0, 243, 255, 0.6), 0 0 20px rgba(0, 243, 255, 0.3);
+}
+
+.neon-glow-pink {
+  text-shadow: 0 0 10px rgba(255, 0, 127, 0.6), 0 0 20px rgba(255, 0, 127, 0.3);
+}
+
+.premium-text-gradient {
+  @apply bg-clip-text text-transparent;
+  background-image: linear-gradient(135deg, #00f3ff 0%, #ff007f 100%);
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(3, 3, 12, 0.82);
+  border-left: 1px solid rgba(0, 243, 255, 0.05);
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(0, 243, 255, 0.25);
+  border: 2px solid #03030c;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 0, 127, 0.5);
+}
+
+.elite-input {
+  @apply bg-white/5 border border-white/10 rounded-2xl px-6 py-4 focus:ring-2 focus:ring-cyber-cyan/50 focus:border-cyber-cyan outline-none transition-all placeholder:text-white/20 font-mono;
+}
+
+.cyber-badge {
+  @apply font-mono text-[9px] uppercase tracking-[0.2em] px-3 py-1 bg-white/5 border border-white/10 rounded-md text-white/50;
+}
+
+/* High-End Cybernetic Glitch Entrance */
+@keyframes elite-glitch-entrance {
+  0% {
+    opacity: 0;
+    transform: translate3d(0, 30px, 0) scale(0.96) skewX(-4deg);
+    filter: brightness(2) contrast(1.5) hue-rotate(90deg);
+    box-shadow: 0 0 30px rgba(0, 243, 255, 0.6), inset 0 0 15px rgba(255, 0, 127, 0.3);
+  }
+  12% {
+    opacity: 0.4;
+    transform: translate3d(-5px, 12px, 0) scale(1.02) skewX(6deg);
+    filter: brightness(1.7) contrast(1.4) hue-rotate(-30deg);
+    box-shadow: -8px 0 25px rgba(255, 0, 127, 0.6), 8px 0 25px rgba(0, 243, 255, 0.6);
+  }
+  24% {
+    opacity: 0.15;
+    transform: translate3d(4px, -8px, 0) scale(0.98) skewX(-2deg);
+    filter: none;
+    box-shadow: none;
+  }
+  36% {
+    opacity: 0.8;
+    transform: translate3d(-2px, 5px, 0) scale(1.015) skewX(3deg);
+    filter: brightness(1.4) hue-rotate(180deg);
+    box-shadow: 0 0 35px rgba(0, 243, 255, 0.5);
+  }
+  48% {
+    opacity: 0.45;
+    transform: translate3d(2px, -3px, 0) scale(0.99) skewX(-4deg);
+    filter: contrast(1.6) brightness(0.8);
+    box-shadow: none;
+  }
+  60% {
+    opacity: 0.95;
+    transform: translate3d(-1px, 1px, 0) scale(1.005) skewX(1deg);
+    filter: hue-rotate(270deg) brightness(1.2);
+    box-shadow: 0 0 20px rgba(255, 0, 127, 0.4);
+  }
+  72% {
+    opacity: 0.7;
+    transform: translate3d(0, 0, 0) scale(1) skewX(0);
+    filter: none;
+    box-shadow: none;
+  }
+  85% {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale(1);
+    filter: brightness(1.1);
+    box-shadow: 0 0 40px rgba(0, 243, 255, 0.4), inset 0 0 20px rgba(255, 0, 127, 0.25);
+  }
+  100% {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale(1);
+    filter: none;
+    box-shadow: 0 0 20px rgba(0,0,0,0.67);
+  }
+}
+
+/* Micro Glitch Entrance for smaller grid elements like comments */
+@keyframes comment-glitch-entrance {
+  0% {
+    opacity: 0;
+    transform: translate3d(0, 10px, 0) scale(0.98);
+    filter: brightness(1.8) hue-rotate(45deg);
+    border-left-color: #00f3ff;
+  }
+  20% {
+    opacity: 0.5;
+    transform: translate3d(-2px, 4px, 0) scale(1.01);
+    filter: brightness(1.5) hue-rotate(-20deg);
+    border-left-color: #ff007f;
+  }
+  40% {
+    opacity: 0.2;
+    transform: translate3d(1px, -2px, 0);
+    filter: none;
+  }
+  65% {
+    opacity: 0.9;
+    transform: translate3d(-1px, 1px, 0) scale(1.005);
+    filter: brightness(1.3) hue-rotate(120deg);
+  }
+  80% {
+    opacity: 0.7;
+    transform: translate3d(0, 0, 0);
+    filter: none;
+  }
+  100% {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale(1);
+    filter: none;
+  }
+}
+
+/* Neon Pulse Fade-In Glow Effect */
+@keyframes neon-pulse-glow {
+  0%, 100% {
+    border-color: rgba(0, 243, 255, 0.12);
+    box-shadow: 0 0 15px rgba(0, 243, 255, 0.08), inset 0 0 10px rgba(0, 243, 255, 0.03), 0 0 20px rgba(0,0,0,0.67);
+  }
+  50% {
+    border-color: rgba(255, 0, 127, 0.4);
+    box-shadow: 0 0 25px rgba(255, 0, 127, 0.25), inset 0 0 12px rgba(255, 0, 127, 0.1), 0 0 20px rgba(0,0,0,0.67);
+  }
+}
+
+.glitch-entrance {
+  animation: elite-glitch-entrance 0.85s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
+}
+
+.comment-glitch {
+  animation: comment-glitch-entrance 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
+}
+
+.neon-pulse-glow {
+  animation: neon-pulse-glow 5s infinite ease-in-out;
+}
+
+/* Cybernetic Marquee Ticker */
+@keyframes marquee-scroll {
+  0% { transform: translate3d(0, 0, 0); }
+  100% { transform: translate3d(-50%, 0, 0); }
+}
+
+.animate-marquee {
+  display: flex;
+  width: max-content;
+  animation: marquee-scroll 30s linear infinite;
+  will-change: transform;
+}
+
+.animate-marquee-fast {
+  display: flex;
+  width: max-content;
+  animation: marquee-scroll 18s linear infinite;
+  will-change: transform;
+}
+
+.animate-marquee:hover, .animate-marquee-fast:hover {
+  animation-play-state: paused;
+}
+
