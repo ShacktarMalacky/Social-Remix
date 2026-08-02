@@ -4,6 +4,7 @@ import { Award, ShoppingBag, Sparkles, LogIn, Wand2, RefreshCw, Check, Palette, 
 import { useAuth } from '../context/AuthContext';
 import { cyberSound } from '../services/soundService';
 import { useImmersive } from '../context/ImmersiveContext';
+import posthog from '../lib/posthog';
 
 const PRESET_INTERESTS = [
   "Cyberpunk Neon City",
@@ -75,6 +76,10 @@ export default function Profile() {
       }
 
       setBackgroundUrl(data.imageUrl);
+      posthog.capture('profile_background_generated', {
+        selected_interest_count: selectedInterests.length,
+        has_custom_prompt: Boolean(customPrompt.trim())
+      });
       cyberSound.playSuccess();
       setSuccessMsg("Neural aura successfully synthesized and applied!");
       setTimeout(() => setSuccessMsg(null), 4000);

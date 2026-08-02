@@ -4,6 +4,7 @@ import { MessageCircle, Send, Plus, Search, Lock, LogIn } from 'lucide-react';
 import { db } from '../lib/firebase';
 import { collection, addDoc, query, where, orderBy, onSnapshot, serverTimestamp, or } from 'firebase/firestore';
 import { useAuth } from '../context/AuthContext';
+import posthog from '../lib/posthog';
 
 export default function Messages() {
   const { user, signInWithGoogle } = useAuth();
@@ -69,6 +70,7 @@ export default function Messages() {
         toId: activeRecipient.id,
         timestamp: serverTimestamp()
       });
+      posthog.capture('message_sent');
     } catch (err) {
       console.error("Message send error:", err);
     }
