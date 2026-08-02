@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { motion, AnimatePresence } from 'motion/react';
 import { Monitor, Smartphone, Watch, Zap, ArrowRight, Check, CheckCircle2, RefreshCw, X } from 'lucide-react';
+import posthog from '../lib/posthog';
 
 export default function Hardware() {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -27,6 +28,11 @@ export default function Hardware() {
   }, [searchParams, setSearchParams]);
 
   const handleBuy = async (p: any) => {
+    posthog.capture('checkout_started', {
+      catalog: 'hardware',
+      product_id: p.name.toLowerCase().replace(/\s+/g, '_'),
+      price: p.price
+    });
     setSelectedDevice(p);
     setSimulationStep('auth');
     setSimProgress(0);
@@ -66,6 +72,11 @@ export default function Hardware() {
         setSimulationStep('ledger');
       } else if (progress === 100) {
         clearInterval(interval);
+        posthog.capture('checkout_completed_simulation', {
+          catalog: 'hardware',
+          product_id: p.name.toLowerCase().replace(/\s+/g, '_'),
+          price: p.price
+        });
         setSimulationStep('success');
       }
     }, 300);

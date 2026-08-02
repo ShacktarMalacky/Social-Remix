@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { motion, AnimatePresence } from 'motion/react';
 import { ShoppingBag, Star, Zap, CreditCard, ArrowRight, ShieldCheck, CheckCircle2, RefreshCw, X } from 'lucide-react';
+import posthog from '../lib/posthog';
 
 export default function Marketplace() {
   const [products, setProducts] = useState<any[]>([]);
@@ -45,6 +46,11 @@ export default function Marketplace() {
   }, [searchParams, setSearchParams]);
 
   const handlePurchase = async (p: any) => {
+    posthog.capture('checkout_started', {
+      catalog: 'marketplace',
+      product_id: String(p.id),
+      price: p.price
+    });
     setSelectedProduct(p);
     setSimulationStep('auth');
     setSimProgress(0);
@@ -84,6 +90,11 @@ export default function Marketplace() {
         setSimulationStep('ledger');
       } else if (progress === 100) {
         clearInterval(interval);
+        posthog.capture('checkout_completed_simulation', {
+          catalog: 'marketplace',
+          product_id: String(p.id),
+          price: p.price
+        });
         setSimulationStep('success');
       }
     }, 300);

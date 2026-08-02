@@ -12,6 +12,7 @@ import VideoReactionRecorder, { getFilterStyle } from '../components/VideoReacti
 import { cyberSound } from '../services/soundService';
 import { useImmersive } from '../context/ImmersiveContext';
 import TailoredFeed from '../components/TailoredFeed';
+import posthog from '../lib/posthog';
 
 export default function SocialPage() {
   const { user, signInWithGoogle } = useAuth();
@@ -107,6 +108,10 @@ export default function SocialPage() {
         likes: 0,
         createdAt: serverTimestamp()
       });
+      posthog.capture('video_created', {
+        is_premium: isPostPremium,
+        style: videoStyle
+      });
       setVideoPrompt("");
       setCreationMode('text');
     } catch (err) {
@@ -152,6 +157,10 @@ export default function SocialPage() {
         createdAt: serverTimestamp()
       });
 
+      posthog.capture('post_published', {
+        content_type: creationMode,
+        is_premium: isPostPremium
+      });
       setTextContent("");
       setImagePrompt("");
       setIsPostPremium(false);
@@ -172,6 +181,7 @@ export default function SocialPage() {
       await updateDoc(doc(db, 'posts', postId), {
         likes: increment(1)
       });
+      posthog.capture('post_liked');
     } catch (err) {
       console.error("Like error:", err);
     }
@@ -188,6 +198,7 @@ export default function SocialPage() {
         text: commentInput,
         createdAt: serverTimestamp()
       });
+      posthog.capture('comment_published');
       setCommentInput("");
     } catch (err) {
       console.error("Commenting error:", err);
@@ -206,6 +217,9 @@ export default function SocialPage() {
         video: videoBase64,
         filter: filterId || 'normal',
         createdAt: serverTimestamp()
+      });
+      posthog.capture('video_reaction_published', {
+        filter: filterId || 'normal'
       });
       setRecordingPostId(null);
     } catch (err) {

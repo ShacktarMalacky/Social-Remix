@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Play, RotateCcw, Volume2, VolumeX, Shield, Zap, Sparkles, Trophy, Award, Target, Battery, RefreshCw, Cpu, ChevronRight } from 'lucide-react';
+import posthog from '../lib/posthog';
 
 interface Upgrade {
   id: string;
@@ -205,6 +206,11 @@ export default function Galactica() {
           
           playSoundEffect('powerup');
           addTelemetryLog(`Upgrade installed: ${u.name} reached Level ${nextLevel}`, 'success');
+          posthog.capture('game_upgrade_purchased', {
+            upgrade_id: upgradeId,
+            level: nextLevel,
+            cost: u.cost
+          });
           
           return { ...u, level: nextLevel, cost: newCost };
         }
@@ -818,6 +824,10 @@ export default function Galactica() {
 
     const triggerGameOver = () => {
       setIsGameOver(true);
+      posthog.capture('game_ended', {
+        score: gameRef.current.scoreRef,
+        nanites_earned: gameRef.current.nanitesAwardedThisRun
+      });
       playSoundEffect('gameover');
       addTelemetryLog(`Game Over. Sector lost. High-score: ${gameRef.current.scoreRef}`, 'danger');
       
@@ -861,6 +871,7 @@ export default function Galactica() {
     setScore(0);
     setIsGameOver(false);
     setIsPlaying(true);
+    posthog.capture('game_started', { control_type: controlType });
     playSoundEffect('powerup');
     addTelemetryLog('Neural fighter linkage complete. Sector launch initialized!', 'info');
   };

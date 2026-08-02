@@ -5,6 +5,7 @@ import { Lock, Mail, Github, Chrome, ArrowRight, ShieldCheck, Sparkles } from 'l
 import { useAuth } from '../context/AuthContext';
 import { signInWithEmailAndPassword, createUserWithEmailAndPassword, signInAnonymously } from 'firebase/auth';
 import { auth as firebaseAuth } from '../lib/firebase';
+import posthog from '../lib/posthog';
 
 export default function Auth() {
   const { user, signInWithGoogle } = useAuth();
@@ -35,9 +36,11 @@ export default function Auth() {
     try {
       if (isLogin) {
         await signInWithEmailAndPassword(firebaseAuth, email, password);
+        posthog.capture('account_logged_in', { method: 'email_password' });
         setSuccessMsg("Link established successfully!");
       } else {
         await createUserWithEmailAndPassword(firebaseAuth, email, password);
+        posthog.capture('account_registered', { method: 'email_password' });
         setSuccessMsg("Genesis account successfully created!");
       }
     } catch (err: any) {
@@ -54,6 +57,7 @@ export default function Auth() {
     try {
       // Sign in anonymously to get a real Firebase Auth credentials session in Sandboxed UI
       await signInAnonymously(firebaseAuth);
+      posthog.capture('demo_access_started');
       setSuccessMsg("Demo secure link established!");
     } catch (err: any) {
       console.error(err);
